@@ -1,0 +1,25 @@
+
+CREATE TABLE [dbo].[PongPlayers](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](30) NULL,
+	[Wins] [int] NULL,
+	[Losses] [int] NULL,
+	[Points_for] [int] NULL,
+	[Points_against] [int] NULL,
+	[win_ratio] [numeric](4, 3) NULL,
+	[scoring_ratio] [numeric](4, 3) NULL,
+	[community] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING ON
+GO
+
+ALTER TABLE [dbo].[PongPlayers]  WITH CHECK ADD FOREIGN KEY([community])
+REFERENCES [dbo].[PongCommunity] ([ID])
+GO

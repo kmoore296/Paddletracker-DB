@@ -1,0 +1,74 @@
+CREATE PROCEDURE [dbo].[PongPlayersUpdate]
+AS
+BEGIN
+--CALCS PP WINS/LOSSES FOR PLAYER 1--
+;WITH temp AS (
+	SELECT
+		pp.ID,
+		SUM(CASE WHEN pg.win = pg.Player1_ID THEN 1 ELSE 0 END) AS wincount,
+		SUM(CASE WHEN pg.win = pg.Player2_ID THEN 1 ELSE 0 END) AS losscount
+	FROM PongPlayers pp LEFT JOIN PongGames pg
+		ON pp.ID = pg.Player1_ID
+	GROUP BY ID
+	)
+
+UPDATE pp
+SET	pp.Wins = t.wincount, pp.Losses = t.losscount
+FROM PongPlayers pp INNER JOIN temp t ON pp.ID = t.ID
+;
+
+--CALCS PP WINS/LOSSES FOR PLAYER 2--
+;WITH temp2 AS (
+	SELECT
+		pp2.ID,
+		SUM(CASE WHEN pg2.win = pg2.Player2_ID THEN 1 ELSE 0 END) AS wincount2,
+		SUM(CASE WHEN pg2.win = pg2.Player1_ID THEN 1 ELSE 0 END) AS losscount2
+	FROM PongPlayers pp2 INNER JOIN PongGames pg2
+		ON pp2.ID = pg2.Player2_ID
+	GROUP BY ID
+	)
+
+UPDATE pp2
+SET	pp2.Wins = pp2.Wins+t2.wincount2, pp2.Losses = pp2.Losses+t2.losscount2
+FROM PongPlayers pp2 INNER JOIN temp2 t2 ON pp2.ID = t2.ID;
+
+
+--SETS PP POINTS FOR P1--
+;WITH totalpoints1 AS(
+	SELECT pp.ID,
+	SUM(p1_points) AS propoints1,
+	SUM(p2_points) AS antipoints1
+	FROM PongGames pg FULL JOIN PongPlayers pp ON pp.ID = pg.Player1_ID
+	GROUP BY pp.ID
+	)
+
+UPDATE PongPlayers
+SET
+	PongPlayers.Points_for = CASE WHEN tp1.propoints1 IS NULL THEN 0 ELSE tp1.propoints1 END,
+	PongPlayers.Points_against = CASE WHEN tp1.antipoints1 IS NULL THEN 0 ELSE tp1.antipoints1 END
+FROM totalpoints1 tp1 FULL JOIN PongPlayers pp ON pp.ID = tp1.ID;
+
+--SETS PP POINTS FOR P2--
+;WITH totalpoints2 AS(
+	SELECT pp.ID,
+	SUM(p2_points) AS propoints2,
+	SUM(p1_points) AS antipoints2
+	FROM PongGames pg FULL JOIN PongPlayers pp ON pp.ID = pg.Player2_ID
+	GROUP BY pp.ID
+	)
+
+UPDATE PongPlayers
+SET
+	PongPlayers.Points_for = CASE WHEN tp2.propoints2 IS NULL THEN 0+pp.Points_for ELSE pp.Points_for+tp2.propoints2 END,
+	PongPlayers.Points_against = CASE WHEN tp2.antipoints2 IS NULL THEN 0+pp.Points_against ELSE pp.Points_against+tp2.antipoints2 END
+FROM totalpoints2 tp2 FULL JOIN PongPlayers pp ON pp.ID = tp2.ID;
+
+
+--UPDATEs win_ratio and scoring_ratio--
+UPDATE PongPlayers
+SET
+	win_ratio = CONVERT(NUMERIC(8,3),(CONVERT(NUMERIC (8,3), Wins)/(Wins+Losses))),
+	scoring_ratio = CONVERT(NUMERIC(8,3),(CONVERT(NUMERIC (8,3), Points_for)/(Points_for+Points_against)))
+	WHERE Points_for+Points_against!=0 AND Wins+Losses!=0
+END
+GO

@@ -1,0 +1,13 @@
+CREATE PROCEDURE [dbo].[PongNewComm] @name VARCHAR(50), @key VARCHAR(50)
+
+AS
+BEGIN
+
+INSERT INTO PongCommunity (name,passkey)
+VALUES(@name,@key);
+
+SELECT ID FROM PongCommunity
+WHERE name = @name
+
+END
+GO

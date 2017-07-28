@@ -1,0 +1,12 @@
+
+CREATE PROCEDURE [dbo].[PongNewPlayer] @PlayerName VARCHAR(50), @commID INT
+AS
+BEGIN
+INSERT INTO PongPlayers (Name,Wins,Losses,Points_for,Points_against,win_ratio,scoring_ratio,community)
+VALUES
+	(@PlayerName,0,0,0,0,0,0,@commID)
+
+;
+SELECT 'player logged'
+END
+GO

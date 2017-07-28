@@ -1,0 +1,11 @@
+CREATE PROCEDURE [dbo].[PongUpdate]
+AS
+
+BEGIN
+
+EXEC PongGamesUpdate
+EXEC PongPlayersUpdate
+SELECT 'updated'
+
+END
+GO

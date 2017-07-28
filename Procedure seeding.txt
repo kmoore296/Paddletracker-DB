@@ -1,0 +1,17 @@
+
+CREATE PROCEDURE [dbo].[PongSeeding] @namelist VARCHAR(1000),@commID INT
+AS
+
+DECLARE @SQL NVARCHAR(MAX), 
+@SQLParmDefinition NVARCHAR(MAX)
+
+SELECT @SQL = 'SELECT Name FROM PongPlayers '
+SELECT @SQL = @SQL + 'WHERE Name IN (SELECT value FROM [dbo].[list_to_table_fn](@namelist, '',''))AND community=@commID
+ORDER BY scoring_ratio DESC'
+
+SET @SQLParmDefinition = N'@namelist NVARCHAR(MAX),@commID INT'
+
+EXEC sp_executesql  @SQL, @SQLParmDefinition, @namelist, @commID
+
+
+GO

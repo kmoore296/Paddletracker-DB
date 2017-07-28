@@ -1,0 +1,21 @@
+
+
+CREATE TABLE [dbo].[PongGames](
+	[Game_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Player1_ID] [int] NULL,
+	[Player2_ID] [int] NULL,
+	[p1_points] [int] NULL,
+	[p2_points] [int] NULL,
+	[date_played] [datetime] NULL,
+	[P1_serve] [int] NULL,
+	[win] [int] NULL,
+	[community] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Game_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+

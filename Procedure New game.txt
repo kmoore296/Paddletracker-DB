@@ -1,0 +1,25 @@
+CREATE PROCEDURE [dbo].[PongNewGame] @p1name VARCHAR(50), @p2name VARCHAR(50), @p1pts INT, @p2pts INT, @pserve INT, @commID INT
+AS
+BEGIN
+
+DECLARE @p1id INT, @p2id INT
+
+SET @p1id = (SELECT ID
+FROM PongPlayers pt
+WHERE pt.Name = @p1name AND pt.community = @commID)
+
+SET @p2id = (SELECT ID
+FROM PongPlayers pt
+WHERE pt.Name = @p2name AND pt.community = @commID)
+
+INSERT INTO PongGames
+	(player1_ID,player2_ID,p1_points,p2_points,P1_serve,date_played,community)
+SELECT
+	@p1id, @p2id, @p1pts, @p2pts, @pserve, GETDATE(),@commID
+
+;
+
+SELECT @p1name,@p2name,@p1pts,@p2pts
+
+END
+GO

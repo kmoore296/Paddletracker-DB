@@ -1,0 +1,9 @@
+
+CREATE PROCEDURE [dbo].[PongCommCheck] @comm VARCHAR(50), @pass VARCHAR(50)
+AS
+BEGIN
+SELECT ID FROM PongCommunity
+WHERE name = @comm AND passkey = @pass
+END
+
+GO

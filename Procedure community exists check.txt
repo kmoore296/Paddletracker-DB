@@ -1,0 +1,13 @@
+CREATE PROCEDURE [dbo].[PongCommTest] @comm VARCHAR(50)
+AS
+IF EXISTS(SELECT name FROM PongCommunity WHERE name=@comm)
+BEGIN
+SELECT 'yes'
+END
+ELSE
+BEGIN
+SELECT 'no'
+END
+
+
+GO

@@ -1,0 +1,15 @@
+
+CREATE PROCEDURE [dbo].[PongGamesUpdate]
+AS
+BEGIN
+
+--SETS PG win = winner ID--
+UPDATE PongGames
+SET win = CASE
+	WHEN p1_points>p2_points THEN Player1_ID
+	WHEN p1_points<p2_points THEN Player2_ID
+	END
+
+END
+
+GO

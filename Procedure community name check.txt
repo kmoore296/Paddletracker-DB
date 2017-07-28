@@ -1,0 +1,8 @@
+
+CREATE PROCEDURE [dbo].[PongCommName] @ID INT
+AS
+BEGIN
+SELECT name FROM PongCommunity
+WHERE ID = @ID
+END;
+GO
